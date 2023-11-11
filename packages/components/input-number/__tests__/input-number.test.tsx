@@ -44,7 +44,7 @@ describe('InputNumber.vue', () => {
     await nextTick()
     expect(wrapper.find('input').element.value).toEqual('')
     expect(wrapper.find('input').element.getAttribute('aria-valuenow')).toEqual(
-      'null'
+      ''
     )
   })
 
@@ -140,6 +140,18 @@ describe('InputNumber.vue', () => {
     elInputNumber.decrease()
     await nextTick()
     expect(wrapper.find('input').element.value).toEqual('0.3')
+  })
+  //fix: #12690
+  test('maximum is less than the minimum', async () => {
+    try {
+      const num = ref(6)
+      mount(() => <InputNumber v-model={num.value} min={10} max={8} />)
+    } catch (e: any) {
+      expect(e).to.be.an('error')
+      expect(e.message).to.equal(
+        '[InputNumber] min should not be greater than max.'
+      )
+    }
   })
 
   describe('precision accuracy 2', () => {
